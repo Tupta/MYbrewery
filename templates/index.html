@@ -1,35 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible"content=" IE=edge,chrome=1"/>
+{% extends 'base.html' %}
 
-    <title>MYbrewary</title>
+{% block title %}Strona główna{% endblock %}
 
-    <meta name="brewery" content="beer, brewery, making beer">
-    <meta name="keywords" content="zrób sobie browar">
-
-    <link rel="stylesheet" href="static/style.css" type="text/css" />
-
-</head>
-<body>
+{% block content %}
     <div class="container">
         <div class="beerglass">
-            <img src="./images/beerglass.png">
+            <img src="{{ url_for('static', filename='img/beerglass.png') }}">
         </div>
-    
-        <div class="ingridients"> <a href="ingridients.html" ></div>
-        <div class="recipes"> <a href="recipes.html" ></div>
-        <div class="stats"> <a href="stats.html" ></div>
-        <div class="brewing"> <a href="brewing.html" ></div>
 
-
+        <div class="ingridients"><a href="/ingridients">Składniki</a></div>
+        <div class="recipes"><a href="/recipes">Przepisy</a></div>
+        <div class="stats"><a href="/stats">Statystyki</a></div>
+        <div class="brewing"><a href="/brewing">Warzenie</a></div>
     </div>
-    
-    <script src="script.js"></script>
 
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
 
-
-
-</body>
-</html>
