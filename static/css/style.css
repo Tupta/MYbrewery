@@ -1,61 +1,159 @@
 body {
     margin: 0;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh; /* Strona zajmuje min. całą wysokość widoku */
     background-color: black;
-    overflow: hidden;
-}
-.container {
-    font-size: 6px;
-    width: 40em;
-    height: 40em;
-    position: relative;
+    color: white; /* Domyślny kolor tekstu dla całej strony */
+    font-family: Arial, sans-serif; /* Domyślna czcionka */
 }
 
-.beerglass {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Pozostałe style nagłówka bez zmian*/
+.main-header {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+    background-color: #333; 
+}
+
+.header-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     position: absolute;
-    top: 15em;
-    left: 15em;
-    width: 10em;
-    height: 10em;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.header-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2em;
+    z-index: 2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+}
+
+
+/* --- Sekcja dla orbitujących ikon --- */
+
+/* Kontener główny dla orbity */
+.container {
+    /* centralne pozycjonowanie dla kontenera, żeby był na środku strony */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* stały rozmiar dla kontenera orbity, */
+    width: 600px;  
+    height: 600px; 
+    position: relative; /* Ważne! Kontekst dla absolutnie pozycjonowanych ikon */
+    margin: 50px auto; /* Centrowanie kontenera na stronie, jeśli body nie centruje */
+   
+}
+
+/* Wspólne style dla wszystkich orbitujących ikon */
+
+/* Wspólne style dla wszystkich orbitujących DIV-ów (kontenerów ikon) */
+.beerglass, .ingridients, .recipes, .stats, .brewing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;  /* rozmiar ikony */
+    height: 100px; /* rozmiar ikony */
     border-radius: 50%;
-    box-shadow: 0 0 3em rgb(255, 128, 0);
-    animation: orbit 50s linear infinite;
+    box-shadow: 0 0 15px rgba(255, 128, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    /* Tutaj nie ma już text-decoration czy color */
+}
+
+/* Style dla linku (<a>) wewnątrz każdego z tych kontenerów */
+.ingridients a,
+.recipes a,
+.stats a,
+.brewing a {
+    display: flex; /* Aby wyśrodkować obrazek/tekst wewnątrz linku */
+    flex-direction: column; /* Aby tekst był pod ikoną */
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Link zajmuje całą przestrzeń rodzica (diva ikony) */
+    height: 100%;
+    text-decoration: none; /* Usuń podkreślenia */
+    color: white; /* Kolor tekstu linku */
+    font-size: 0.8em; /* Rozmiar tekstu linku */
+}
+
+/* Style dla obrazków (<img>) wewnątrz tych linków */
+.ingridients a img,
+.recipes a img,
+.stats a img,
+.brewing a img {
+    max-width: 70%; /* Obrazek zajmuje max 70% szerokości ikony */
+    max-height: 70%; /* Obrazek zajmuje max 70% wysokości ikony */
+    height: auto; /* Zachowaj proporcje */
+    margin-bottom: 5px; /* Mały odstęp między obrazkiem a tekstem */
+}
+
+/* Style specyficzne dla każdej ikony (np. kolor cienia, obrazek w tle) */
+/* Będziesz potrzebować albo background-image, albo umieścić img wewnątrz div-a */
+/* W przykładzie poniżej zakładam, że będziesz używać obrazków jako tło lub wstawiać je do środka */
+.beerglass {
+    /* background-image: url('{{ url_for("static", filename="img/beerglass_icon.png") }}'); */
+    /* background-size: cover; */
+    
 }
 .ingridients {
-    top: 12.5em;
-    left: 12.5em;
-    width: 15em;
-    height: 15em;
-    animation: orbit 68.7s linear infinite;
+     animation: orbit-ingridients 68.7s linear infinite -10s; 
 }
-
 .recipes {
-    top: 10em;
-    left: 10em;
-    width: 20em;
-    height: 20em;
-    animation: orbit 48.7s linear infinite;
+     animation: orbit-recipes 48.7s linear infinite -20s; 
 }
-
 .stats {
-    top: 6em;
-    left: 6em;
-    width: 28em;
-    height: 28em; 
-    animation: orbit 36.5s linear infinite;   
+     animation: orbit-stats 36.5s linear infinite -30s; 
 }
-
-
 .brewing {
-    top: 2em;
-    left: 2.5em;
-    width: 36em;
-    height: 36em; 
-    animation: orbit 26.5s linear infinite;
+     animation: orbit-brewing 26.5s linear infinite -40s; 
 }
+
+/* Definicje animacji zdefiniowane dla każdego elementu, z różnymi promieniami */
+
+@keyframes orbit-recipes {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
+    }
+}
+
+@keyframes orbit-ingridients {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(200px) rotate(-360deg);
+    }
+}
+
+@keyframes orbit-stats {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(150px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(150px) rotate(-360deg);
+    }
+}
+
+@keyframes orbit-brewing {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(300px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(300px) rotate(-360deg);
+    }
+}
+/* Wartość translateX() będzie promieniem orbity */

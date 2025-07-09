@@ -8,10 +8,33 @@
             <img src="{{ url_for('static', filename='img/beerglass.png') }}">
         </div>
 
-        <div class="ingridients"><a href="/ingridients">Składniki</a></div>
-        <div class="recipes"><a href="/recipes">Przepisy</a></div>
-        <div class="stats"><a href="/stats">Statystyki</a></div>
-        <div class="brewing"><a href="/brewing">Warzenie</a></div>
+        <div class="ingridients">
+            <a href="{{ url_for('ingridients') }}">
+                <img src="{{ url_for('static', filename='img/ingstor.png') }}" alt="Ikona magazynu składników">
+                <span>Składniki</span> {# Opcjonalnie, tekst pod ikoną #}
+            </a>
+        </div>
+
+        <div class="recipes">
+            <a href="{{ url_for('recipes') }}">
+                <img src="{{ url_for('static', filename='img/Brecipes.png') }}" alt="Ikona przepisów">
+                <span>Przepisy</span>
+            </a>
+        </div>
+        
+        <div class="stats">
+            <a href="{{url_for('stats') }}">
+                <img src="{{ url_for('static', filename='img/stats.png') }}" alt ="Ikona statystyk">
+                <span>Statystyki</span>
+            </a>
+        </div>
+        
+        <div class="brewing">
+            <a href="{{url_for('brewing') }}">
+            <img src="{{ url_for('static', filename='img/brewing.png') }}">
+            <span>Warzenie</span>
+            </a>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
