@@ -28,3 +28,61 @@
 
 
 {% endblock %}
+
+###################################################
+{% extends 'base.html' %}
+
+{% block title %}Mój Magazyn Piwa{% endblock %}
+
+{% block content %}
+    <div class="inventory-container">
+        <h1>Mój Magazyn Piwa</h1>
+
+        <div class="add-item-section">
+            <h2>Dodaj nowy składnik</h2>
+            <form id="add-item-form" action="{{ url_for('add_item') }}" method="post">
+                <div class="form-group">
+                    <label for="nazwa_elementu">Nazwa składnika:</label>
+                    <input type="text" id="nazwa_elementu" name="nazwa_elementu" required>
+                </div>
+                <div class="form-group">
+                    <label for="ilosc">Ilość początkowa:</label>
+                    <input type="number" id="ilosc" name="ilosc" value="0" min="0">
+                </div>
+                <button type="submit" class="submit-button">Dodaj składnik</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="inventory-list-section">
+            <h2>Stan Magazynu</h2>
+            <div id="lista-magazynu" class="inventory-table">
+                {% if items %}
+                    <div class="table-header">
+                        <div class="header-name">Nazwa</div>
+                        <div class="header-quantity">Ilość</div>
+                        <div class="header-actions">Akcje</div>
+                    </div>
+                    {% for item in items %}
+                        <div class="item-row" data-item-id="{{ item.id }}">
+                            <div class="item-name">{{ item.name }}</div>
+                            <div class="item-quantity">
+                                <button class="quantity-btn decrease-btn">-</button>
+                                <span class="current-quantity">{{ item.quantity }}</span>
+                                <button class="quantity-btn increase-btn">+</button>
+                            </div>
+                            <div class="item-actions">
+                                <button class="delete-btn">Usuń</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Magazyn jest pusty. Dodaj pierwszy składnik!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/inventory_script.js') }}"></script>
+{% endblock %}

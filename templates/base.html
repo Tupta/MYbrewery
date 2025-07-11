@@ -14,6 +14,15 @@
         <img src="{{ url_for('static', filename='img/header.png') }}"class="header-image">
     </header>
 
+    <nav>
+    <a href="{{ url_for('index') }}">Strona Główna</a> |
+    <a href="{{ url_for('inventory') }}">Magazyn</a> | {# Dodaj ten link #}
+    <a href="{{ url_for('ingredients') }}">Składniki</a> |
+    <a href="{{ url_for('recipes') }}">Przepisy</a> |
+    <a href="{{ url_for('stats') }}">Statystyki</a> |
+    <a href="{{ url_for('brewing') }}">Warzenie</a>
+    </nav>
+    
     <main>
         {% block content %}{% endblock %}
     </main>
