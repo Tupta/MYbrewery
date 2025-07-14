@@ -10,7 +10,7 @@ body {
 .main-header {
     position: relative;
     width: 100%;
-    height: 40px;
+    height: 80px;
     overflow: hidden;
     background-color: #333; 
 }
@@ -23,11 +23,12 @@ body {
     top: 0;
     left: 0;
     z-index: 1;
+    
 }
 
 .header-title {
     position: absolute;
-    top: 50%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
@@ -54,25 +55,51 @@ body {
    
 }
 
-/* Wspólne style dla wszystkich orbitujących ikon */
+
+/* Styl dla centralnej ikony - Beerglass */
+.beerglass {
+    position: absolute; /* Musi być absolute, by centrowanie działało w kontenerze */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centruje element dokładnie na środku */
+    width: 100px;  /* Ta sama szerokość co orbitujące ikony */
+    height: 100px; /* Ta sama wysokość co orbitujące ikony */
+    border-radius: 50%; /* Okrągły kształt */
+    box-shadow: 0 0 15px rgba(255, 128, 0, 0.7); /* Jeśli chcesz cień */
+    background-color: transparent; /* Zupełnie przezroczyste tło */
+    cursor: default; /* Zmieniamy kursor, bo to nie jest klikalny link w tym kontekście */
+    opacity: 1; /* Obrazek sam w sobie powinien być widoczny, a nie "za mgłą". Jak chcesz cały element przezroczysty to 0.5 */
+    display: flex; /* Aby wyśrodkować obrazek w środku, jeśli tam będzie img */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Jeśli beerglass jest obrazkiem img, możesz chcieć ustalić jego rozmiar */
+.beerglass img {
+    max-width: 100%; /* Upewnij się, że obrazek nie wychodzi poza swój div */
+    max-height: 100%;
+    object-fit: contain; /* Obrazek będzie skalowany, by zmieścić się w polu */
+}
+
 
 /* Wspólne style dla wszystkich orbitujących DIV-ów (kontenerów ikon) */
-.beerglass, .ingridients, .recipes, .stats, .brewing {
+.ingredients, .recipes, .stats, .brewing {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100px;  /* rozmiar ikony */
     height: 100px; /* rozmiar ikony */
-    border-radius: 50%;
+    border-radius: 90%;
     box-shadow: 0 0 15px rgba(255, 128, 0, 0.7);
     background-color: rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    /* Tutaj nie ma już text-decoration czy color */
+    opacity: 1;
+    
 }
 
 /* Style dla linku (<a>) wewnątrz każdego z tych kontenerów */
-.ingridients a,
+.ingredients a,
 .recipes a,
 .stats a,
 .brewing a {
@@ -88,7 +115,7 @@ body {
 }
 
 /* Style dla obrazków (<img>) wewnątrz tych linków */
-.ingridients a img,
+.ingredients a img,
 .recipes a img,
 .stats a img,
 .brewing a img {
@@ -101,22 +128,18 @@ body {
 /* Style specyficzne dla każdej ikony (np. kolor cienia, obrazek w tle) */
 /* Będziesz potrzebować albo background-image, albo umieścić img wewnątrz div-a */
 /* W przykładzie poniżej zakładam, że będziesz używać obrazków jako tło lub wstawiać je do środka */
-.beerglass {
-    /* background-image: url('{{ url_for("static", filename="img/beerglass_icon.png") }}'); */
-    /* background-size: cover; */
-    
-}
-.ingridients {
-     animation: orbit-ingridients 68.7s linear infinite -10s; 
+
+.ingredients {
+     animation: orbit-ingredients 40s linear infinite -10s; 
 }
 .recipes {
-     animation: orbit-recipes 48.7s linear infinite -20s; 
+     animation: orbit-recipes 40s linear infinite -20s; 
 }
 .stats {
-     animation: orbit-stats 36.5s linear infinite -30s; 
+     animation: orbit-stats 40s linear infinite -0s; 
 }
 .brewing {
-     animation: orbit-brewing 26.5s linear infinite -40s; 
+     animation: orbit-brewing 40s linear infinite -30s; 
 }
 
 /* Definicje animacji zdefiniowane dla każdego elementu, z różnymi promieniami */
@@ -130,30 +153,30 @@ body {
     }
 }
 
-@keyframes orbit-ingridients {
+@keyframes orbit-ingredients {
     0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(200px) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
     }
     100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(200px) rotate(-360deg);
+        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
     }
 }
 
 @keyframes orbit-stats {
     0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(150px) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
     }
     100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(150px) rotate(-360deg);
+        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
     }
 }
 
 @keyframes orbit-brewing {
     0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(300px) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
     }
     100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(300px) rotate(-360deg);
+        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
     }
 }
 /* Wartość translateX() będzie promieniem orbity */

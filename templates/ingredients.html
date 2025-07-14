@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Strona magazynu{% endblock %}
+
+{% block content %}
+    <div class="container">
+         <form id="dodaj-element-form" action="/dodaj_do_magazynu" method="post">
+            <div>
+                <label for="nazwa_elementu">Nazwa elementu:</label>
+                <input type="text" id="nazwa_elementu" name="nazwa_elementu"><br><br>
+
+                <label for="ilosc">Ilość:</label>
+                <input type="number" id="ilosc" name="ilosc" value="0" min="0">
+                <button onclick="zmniejszIlosc()">-</button>
+                <button onclick="zwiekszIlosc()">+</button><br><br>
+
+                <button onclick="dodajDoMagazynu()">Dodaj do magazynu</button>
+            
+            </div>
+        </form>
+
+
+
+
+
+    </div>
+
+
+
+{% endblock %}
+
