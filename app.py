@@ -1,23 +1,28 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import os # Importujemy moduł os do pracy ze ścieżkami plików
+import os
+from flask_migrate import Migrate 
+
 
 app = Flask(__name__)
 
 # Konfiguracja bazy danych SQLite
-# Użyj os.path.abspath() i os.path.dirname() aby ścieżka do bazy była zawsze względna do pliku app.py
+# os.path.abspath() i os.path.dirname() aby ścieżka do bazy była zawsze względna do pliku app.py
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventory.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Wyłączamy śledzenie modyfikacji, bo nie jest potrzebne
 
 db = SQLAlchemy(app)
 
-# Definicja modelu bazy danych dla składników magazynu (Twoje Items)
+migrate = Migrate(app, db)
+
+# Definicja modelu bazy danych dla składników magazynu 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True) # Nazwa, unikalna
     quantity = db.Column(db.Integer, default=0, nullable=False)   # Ilość, domyślnie 0
-    # Możesz dodać pole na jednostkę, np. unit = db.Column(db.String(20), default='g')
+    unit = db.Column(db.String(20), default='g') # Jednostka, domyślnie gram
+    type = db.Column(db.String(50), default='słód')  # rodzaj do rozbicia tabeli na mniejsze tabele na stronie
 
     def __repr__(self):
         # Reprezentacja obiektu, przydatna do debugowania
@@ -63,10 +68,21 @@ def index():
 @app.route('/ingredients')
 def ingredients():
     """Trasa dla strony Magazynu/Składników. Wyświetla listę wszystkich składników."""
-    # Pobieramy wszystkie elementy z bazy danych, posortowane alfabetycznie
-    items = Item.query.order_by(Item.name).all()
-    # Przekazujemy listę elementów do szablonu ingredients.html (zamiast inventory.html)
-    return render_template('ingredients.html', items=items)
+    # # Pobieramy wszystkie elementy z bazy danych, posortowane alfabetycznie
+    # items = Item.query.order_by(Item.name).all()
+    # # Przekazujemy listę elementów do szablonu ingredients.html (zamiast inventory.html)
+    # return render_template('ingredients.html', items=items)
+    slody = Item.query.filter_by(type='slod').all()
+    chmiele = Item.query.filter_by(type='chmiel').all()
+    drozdze = Item.query.filter_by(type='drozdze').all()
+    inne = Item.query.filter_by(type='inne').all()
+    return render_template(
+        'ingredients.html',
+        slody=slody,
+        chmiele=chmiele,
+        drozdze=drozdze,
+        inne=inne
+    )
 
 @app.route('/add_item', methods=['POST'])
 def add_item():
