@@ -1,83 +1,81 @@
 {% extends 'base.html' %}
 
-{% block title %}Strona magazynu{% endblock %}
+{% block title %}Magazyn{% endblock %}
 
 {% block content %}
-<div class="container">
-    <form id="dodaj-element-form" action="/dodaj_do_magazynu" method="post">
-        <label for="nazwa_elementu">Nazwa elementu:</label>
-        <input type="text" id="nazwa_elementu" name="nazwa_elementu"><br><br>
+<div class="container py-4">
+    <h1 class="mb-4">Magazyn składników</h1>
 
-        <label for="ilosc">Ilość:</label>
-        <input type="number" id="ilosc" name="ilosc" value="0" min="0">
-        <button type="button" onclick="zmniejszIlosc()">-</button>
-        <button type="button" onclick="zwiekszIlosc()">+</button><br><br>
+    <!-- Formularz dodawania składnika -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Dodaj nowy składnik
+        </div>
+        <div class="card-body">
+            <form id="dodaj-element-form" action="/add_item" method="post" class="row g-3">
+                <div class="col-md-6">
+                    <label for="nazwa_elementu" class="form-label">Nazwa składnika:</label>
+                    <input type="text" class="form-control" id="nazwa_elementu" name="nazwa_elementu" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="ilosc" class="form-label">Ilość:</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-outline-secondary" onclick="zmniejszIlosc()">-</button>
+                        <input type="number" class="form-control text-center" id="ilosc" name="ilosc" value="0" min="0">
+                        <button type="button" class="btn btn-outline-secondary" onclick="zwiekszIlosc()">+</button>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Dodaj</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <button type="submit">Dodaj do magazynu</button>
-    </form>
-
-    <h2>Słody</h2>
-    <table>
-        <thead>
-            <tr><th>Nazwa</th><th>Ilość</th><th>Jednostka</th></tr>
-        </thead>
-        <tbody>
-            {% for item in slody %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Chmiele</h2>
-    <table>
-        <thead>
-            <tr><th>Nazwa</th><th>Ilość</th><th>Jednostka</th></tr>
-        </thead>
-        <tbody>
-            {% for item in chmiele %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Drożdże</h2>
-    <table>
-        <thead>
-            <tr><th>Nazwa</th><th>Ilość</th><th>Jednostka</th></tr>
-        </thead>
-        <tbody>
-            {% for item in drozdze %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Inne Składniki</h2>
-    <table>
-        <thead>
-            <tr><th>Nazwa</th><th>Ilość</th><th>Jednostka</th></tr>
-        </thead>
-        <tbody>
-            {% for item in inne %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unit }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Tabele z kategoriami -->
+    {% for kategoria, lista in [('Słody', slody), ('Chmiele', chmiele), ('Drożdże', drozdze), ('Inne składniki', inne)] %}
+    <div class="mb-4">
+        <h3>{{ kategoria }}</h3>
+        {% if lista %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Ilość</th>
+                        <th>Jednostka</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in lista %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted">Brak składników w tej kategorii.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
 </div>
+
+<script>
+    function zwiekszIlosc() {
+        var input = document.getElementById("ilosc");
+        input.value = parseInt(input.value) + 1;
+    }
+
+    function zmniejszIlosc() {
+        var input = document.getElementById("ilosc");
+        var current = parseInt(input.value);
+        if (current > 0) {
+            input.value = current - 1;
+        }
+    }
+</script>
 {% endblock %}
