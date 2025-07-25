@@ -70,7 +70,7 @@ def ingredients():
     """Trasa dla strony Magazynu/Składników. Wyświetla listę wszystkich składników."""
     # # Pobieramy wszystkie elementy z bazy danych, posortowane alfabetycznie
     # items = Item.query.order_by(Item.name).all()
-    # # Przekazujemy listę elementów do szablonu ingredients.html (zamiast inventory.html)
+    # # Przekazujemy listę elementów do szablonu ingredients.html 
     # return render_template('ingredients.html', items=items)
     slody = Item.query.filter_by(type='slod').all()
     chmiele = Item.query.filter_by(type='chmiel').all()

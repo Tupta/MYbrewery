@@ -1,34 +1,34 @@
+/* Globalne style body */
 body {
     margin: 0;
-    min-height: 100vh; /* Strona zajmuje min. całą wysokość widoku */
+    min-height: 100vh;
     background-color: black;
     color: white; /* Domyślny kolor tekstu dla całej strony */
-    font-family: Arial, sans-serif; /* Domyślna czcionka */
+    font-family: Arial, sans-serif;
 }
 
-/* Pozostałe style nagłówka bez zmian*/
+/* Style nagłówka */
 .main-header {
     position: relative;
     width: 100%;
     height: 80px;
     overflow: hidden;
-    background-color: #333; 
+    background-color: #333; /* Tło na wypadek, gdyby obrazek się nie załadował */
 }
 
 .header-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /*przycięcie dopasowanie obrazka do rozmiaru kontenera */
+    object-fit: cover;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1;
-    
 }
 
 .header-title {
     position: absolute;
-    top: 25%;
+    top: 50%; /* Zmienione na 50% aby centrować pionowo w headerze */
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
@@ -38,145 +38,226 @@ body {
     white-space: nowrap;
 }
 
+/* Style nawigacji Bootstrapa (navbar) - opcjonalne, jeśli chcesz zmienić domyślne kolory */
+.navbar {
+    border-bottom: 2px solid #ff8000; /* Pomarańczowa linia pod nawigacją */
+}
+.navbar-brand, .nav-link {
+    color: white !important; /* Ważne, aby nadpisać kolor Bootstrapa */
+}
+.nav-link:hover {
+    color: #ff8000 !important;
+}
 
-/* --- Sekcja dla orbitujących ikon --- */
 
-/* Kontener główny dla orbity */
-.container {
-    /* centralne pozycjonowanie dla kontenera, żeby był na środku strony */
+/* --- Sekcja dla orbitujących ikon (STRONA GŁÓWNA - index.html) --- */
+
+/* Kontener główny dla orbity - TYLKO DLA STRONY GŁÓWNEJ! */
+/* Zmiana nazwy klasy, aby uniknąć konfliktu z klasą .container Bootstrapa */
+.index-page-orbit-container { 
     display: flex;
     justify-content: center;
     align-items: center;
-    /* stały rozmiar dla kontenera orbity, */
-    width: 600px;  
+    width: 600px; /* Stały rozmiar dla obszaru animacji */
     height: 600px; 
-    position: relative; /* Ważne! Kontekst dla absolutnie pozycjonowanych ikon */
-    margin: 50px auto; /* Centrowanie kontenera na stronie, jeśli body nie centruje */
-   
+    position: relative;
+    margin: 50px auto; /* Centrowanie na stronie */
 }
-
 
 /* Styl dla centralnej ikony - Beerglass */
 .beerglass {
-    position: absolute; /* Musi być absolute, by centrowanie działało w kontenerze */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centruje element dokładnie na środku */
-    width: 100px;  /* Ta sama szerokość co orbitujące ikony */
-    height: 100px; /* Ta sama wysokość co orbitujące ikony */
-    border-radius: 50%; /* Okrągły kształt */
-    box-shadow: 0 0 15px rgba(255, 128, 0, 0.7); /* Jeśli chcesz cień */
-    background-color: transparent; /* Zupełnie przezroczyste tło */
-    cursor: default; /* Zmieniamy kursor, bo to nie jest klikalny link w tym kontekście */
-    opacity: 1; /* Obrazek sam w sobie powinien być widoczny, a nie "za mgłą". Jak chcesz cały element przezroczysty to 0.5 */
-    display: flex; /* Aby wyśrodkować obrazek w środku, jeśli tam będzie img */
-    justify-content: center;
-    align-items: center;
-}
-
-/* Jeśli beerglass jest obrazkiem img, możesz chcieć ustalić jego rozmiar */
-.beerglass img {
-    max-width: 100%; /* Upewnij się, że obrazek nie wychodzi poza swój div */
-    max-height: 100%;
-    object-fit: contain; /* Obrazek będzie skalowany, by zmieścić się w polu */
-}
-
-
-/* Wspólne style dla wszystkich orbitujących DIV-ów (kontenerów ikon) */
-.ingredients, .recipes, .stats, .brewing {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100px;  /* rozmiar ikony */
-    height: 100px; /* rozmiar ikony */
-    border-radius: 90%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Zmienione na 50% dla idealnego koła */
     box-shadow: 0 0 15px rgba(255, 128, 0, 0.7);
-    background-color: rgba(0, 0, 0, 0.5);
-    cursor: pointer;
+    background-color: transparent; /* Przezroczyste tło */
+    cursor: default;
     opacity: 1;
-    
-}
-
-/* Style dla linku (<a>) wewnątrz każdego z tych kontenerów */
-.ingredients a,
-.recipes a,
-.stats a,
-.brewing a {
-    display: flex; /* Aby wyśrodkować obrazek/tekst wewnątrz linku */
-    flex-direction: column; /* Aby tekst był pod ikoną */
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%; /* Link zajmuje całą przestrzeń rodzica (diva ikony) */
+}
+
+.beerglass img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Wspólne style dla wszystkich ORBITUJĄCYCH DIV-ów (kontenerów ikon) */
+/* Dodany selektor, aby te style dotyczyły tylko elementów w .index-page-orbit-container */
+.index-page-orbit-container .ingredients, 
+.index-page-orbit-container .recipes, 
+.index-page-orbit-container .stats, 
+.index-page-orbit-container .brewing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Zmienione na 50% dla idealnego koła */
+    box-shadow: 0 0 15px rgba(255, 128, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0); /* Całkowicie przezroczyste tło */
+    cursor: pointer;
+    opacity: 1;
+}
+
+/* Style dla linku (<a>) wewnątrz tych ORBITUJĄCYCH KONTENERÓW */
+.index-page-orbit-container .ingredients a,
+.index-page-orbit-container .recipes a,
+.index-page-orbit-container .stats a,
+.index-page-orbit-container .brewing a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     height: 100%;
-    text-decoration: none; /* Usuń podkreślenia */
-    color: white; /* Kolor tekstu linku */
-    font-size: 0.8em; /* Rozmiar tekstu linku */
+    text-decoration: none;
+    color: white;
+    font-size: 0.8em;
 }
 
-/* Style dla obrazków (<img>) wewnątrz tych linków */
-.ingredients a img,
-.recipes a img,
-.stats a img,
-.brewing a img {
-    max-width: 70%; /* Obrazek zajmuje max 70% szerokości ikony */
-    max-height: 70%; /* Obrazek zajmuje max 70% wysokości ikony */
-    height: auto; /* Zachowaj proporcje */
-    margin-bottom: 5px; /* Mały odstęp między obrazkiem a tekstem */
+/* Style dla obrazków (<img>) wewnątrz tych ORBITUJĄCYCH LINKÓW */
+.index-page-orbit-container .ingredients a img,
+.index-page-orbit-container .recipes a img,
+.index-page-orbit-container .stats a img,
+.index-page-orbit-container .brewing a img {
+    max-width: 70%;
+    max-height: 70%;
+    height: auto;
+    margin-bottom: 5px;
 }
 
-/* Style specyficzne dla każdej ikony (np. kolor cienia, obrazek w tle) */
-/* Będziesz potrzebować albo background-image, albo umieścić img wewnątrz div-a */
-/* W przykładzie poniżej zakładam, że będziesz używać obrazków jako tło lub wstawiać je do środka */
+/* Definicja jednej animacji dla wszystkich orbitujących ikon */
+@keyframes orbit {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
+    }
+}
 
-.ingredients {
-     animation: orbit-ingredients 40s linear infinite -10s; 
+/* Przypisanie animacji z różnymi opóźnieniami dla ułożenia "krzyżowego" */
+.ingredients { /* Tutaj używasz tylko klasy ingredients, recipes itd. # NIE DODAJĘ .index-page-orbit-container PRZED NAZWAMI IKON, BO TE KLAASY NADAJESZ DIVOM TYLKO W HTML. */
+    animation: orbit 40s linear infinite -10s; 
 }
 .recipes {
-     animation: orbit-recipes 40s linear infinite -20s; 
+    animation: orbit 40s linear infinite -20s; 
 }
 .stats {
-     animation: orbit-stats 40s linear infinite -0s; 
+    animation: orbit 40s linear infinite 0s; /* Zmienione na 0s dla pozycji "na górze" */
 }
 .brewing {
-     animation: orbit-brewing 40s linear infinite -30s; 
+    animation: orbit 40s linear infinite -30s; 
 }
 
-/* Definicje animacji zdefiniowane dla każdego elementu, z różnymi promieniami */
+/* --- Style dla strony Magazynu (ingredients.html) --- */
 
-@keyframes orbit-recipes {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
-    }
+/* Główny kontener strony magazynu */
+.inventory-container {
+    padding: 20px;
+    background-color: #222; /* Ciemniejsze tło dla sekcji magazynu */
+    border-radius: 8px;
+    margin-top: 20px; /* Odsunięcie od nagłówka/nawigacji */
+    color: #eee;
 }
 
-@keyframes orbit-ingredients {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
-    }
+/* Nagłówki sekcji */
+.inventory-container h1, .inventory-container h2, .inventory-container h3 {
+    color: #ff8000; /* Pomarańczowy kolor dla nagłówków */
+    margin-bottom: 1em;
+    text-align: center;
 }
 
-@keyframes orbit-stats {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
-    }
+/* Styl dla formularza dodawania składników */
+.add-item-section .form-group {
+    margin-bottom: 15px; /* Odstęp między polami formularza */
 }
 
-@keyframes orbit-brewing {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg) translateX(250px) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg) translateX(250px) rotate(-360deg);
-    }
+/* Specyficzny styl dla input group w formularzu (ilość) */
+.add-item-section .input-group .form-control {
+    background-color: #444;
+    border: 1px solid #555;
+    color: white;
 }
-/* Wartość translateX() będzie promieniem orbity */
+.add-item-section .input-group .btn-outline-secondary {
+    border-color: #ff8000;
+    color: #ff8000;
+}
+.add-item-section .input-group .btn-outline-secondary:hover {
+    background-color: #ff8000;
+    color: black;
+}
+
+/* Styl dla tabel magazynu */
+.inventory-table {
+    display: grid; /* Używamy grid dla lepszego układu tabelarycznego */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Kolumny automatycznie się dopasowują */
+    gap: 1px; /* Cienkie linie między elementami gridu */
+    border: 1px solid #555;
+    border-radius: 5px;
+    overflow: hidden; /* Aby zaokrąglone rogi działały */
+}
+
+.table-header, .item-row {
+    display: contents; /* Elementy wiersza stają się częścią gridu rodzica */
+}
+
+.table-header div, .item-row div {
+    padding: 10px;
+    background-color: #333;
+    border: 1px solid #444;
+    text-align: center;
+    display: flex; /* Aby centrować zawartość w komórkach */
+    justify-content: center;
+    align-items: center;
+}
+
+.table-header div {
+    background-color: #ff8000; /* Ciemne tło dla nagłówków tabeli */
+    font-weight: bold;
+    color: black;
+}
+
+.item-row:nth-child(even) div {
+    background-color: #2a2a2a; /* Ciemniejsze tło dla parzystych wierszy */
+}
+
+/* Styl dla przycisków w tabeli */
+.quantity-btn {
+    background-color: #ff8000;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    font-weight: bold;
+}
+.quantity-btn:hover {
+    background-color: #e07000;
+}
+.delete-btn {
+    background-color: #dc3545; /* Czerwony kolor dla usuwania */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.current-quantity {
+    display: inline-block;
+    min-width: 30px; /* Minimalna szerokość, żeby liczba się nie "telepała" */
+    text-align: center;
+}
