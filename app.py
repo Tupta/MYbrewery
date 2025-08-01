@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-from flask_migrate import Migrate 
+from flask_migrate import Migrate
+
 
 
 app = Flask(__name__)
@@ -68,8 +69,18 @@ def index():
 @app.route('/ingredients')
 def ingredients():
     """Trasa dla strony Magazynu/Składników. Renderuje szablon."""
-    # Dane są teraz pobierane przez JavaScript za pomocą /ingredients_data
-    return render_template('ingredients.html')
+    all_items = Item.query.order_by(Item.name).all()
+    
+    slody = [item for item in all_items if item.type == 'slod']
+    chmiele = [item for item in all_items if item.type == 'chmiel']
+    drozdze = [item for item in all_items if item.type == 'drozdze']
+    inne = [item for item in all_items if item.type == 'inne']
+    
+    return render_template('ingredients.html',
+                           slody=slody,
+                           chmiele=chmiele,
+                           drozdze=drozdze,
+                           inne=inne)
 
 @app.route('/ingredients_data')
 def ingredients_data():
@@ -124,7 +135,7 @@ def add_item():
             existing_item.unit = item_unit
             existing_item.type = item_type
         db.session.commit()
-        return jsonify(success=True, message="Ilość składnika zaktualizowana.")
+        return redirect(url_for('ingredients'))
     else: # Nowy składnik, dodajemy go tylko jeśli ilość jest dodatnia
         if item_quantity > 0:
             new_item = Item(name=item_name, quantity=item_quantity, type=item_type, unit=item_unit)
