@@ -69,18 +69,7 @@ def index():
 @app.route('/ingredients')
 def ingredients():
     """Trasa dla strony Magazynu/Składników. Renderuje szablon."""
-    all_items = Item.query.order_by(Item.name).all()
-    
-    slody = [item for item in all_items if item.type == 'slod']
-    chmiele = [item for item in all_items if item.type == 'chmiel']
-    drozdze = [item for item in all_items if item.type == 'drozdze']
-    inne = [item for item in all_items if item.type == 'inne']
-    
-    return render_template('ingredients.html',
-                           slody=slody,
-                           chmiele=chmiele,
-                           drozdze=drozdze,
-                           inne=inne)
+    return render_template('ingredients.html')
 
 @app.route('/ingredients_data')
 def ingredients_data():
@@ -135,7 +124,7 @@ def add_item():
             existing_item.unit = item_unit
             existing_item.type = item_type
         db.session.commit()
-        return redirect(url_for('ingredients'))
+        return jsonify(success=True, message="Ilość składnika zaktualizowana.")
     else: # Nowy składnik, dodajemy go tylko jeśli ilość jest dodatnia
         if item_quantity > 0:
             new_item = Item(name=item_name, quantity=item_quantity, type=item_type, unit=item_unit)
