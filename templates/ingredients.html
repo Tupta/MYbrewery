@@ -1,23 +1,58 @@
 {% extends 'base.html' %}
 
-{% block title %}Magazyn{% endblock %}
+{% block title %}Magazyn składników{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="mb-4">Magazyn składników</h1>
+    <h1 class="mb-4 text-center">Magazyn składników</h1>
 
     <!-- Formularz dodawania składnika -->
-    <div class="card mb-4">
-        <div class="card-header">
+    <div class="card mb-4 bg-dark tex-white border-secondary">
+        <div class="card-header border-secondary">
             Dodaj nowy składnik
         </div>
         <div class="card-body">
-            <form id="dodaj-element-form" action="/add_item" method="post" class="row g-3">
-                <div class="col-md-6">
+            <form id="dodaj-element-form" action={{ url_for('add_item')}} method="post" class="row g-3">
+                <div class="col-md-4">
                     <label for="nazwa_elementu" class="form-label">Nazwa składnika:</label>
                     <input type="text" class="form-control" id="nazwa_elementu" name="nazwa_elementu" required>
                 </div>
-                <div class="col-md-4">
+
+                <!-- Bootstrap dla przyciskow radiowych "Rodzaj" --> 
+                <div class="col-md-2 d-flex flex-column justify-content-center">
+                    <label class="form-label mb-2">Rodzaj:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="typeSlod" value="slod" checked>
+                        <label class="form-check-label" for="typeSlod">Słody</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="typeChmiel" value="chmiel">
+                        <label class="form-check-label" for="typeChmiel">Chmiele</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="typeDrozdz" value="drozdze">
+                        <label class="form-check-label" for="typeDrozdz">Drożdże</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="type" id="typeInne" value="inne">
+                        <label class="form-check-label" for="typeInne">Inne składniki</label>
+                    </div>
+                </div>
+
+                <!-- Bootstrap dla przyciskow radiowych "WAGA" --> 
+                <div class="col-md-2 d-flex flex-column justify-content-center">
+                    <label class="form-label mb-2">Jednostka:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="unit" id="unitKg" value="kg" checked>
+                        <label class="form-check-label" for="unitKg">kg</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="unit" id="unitG" value="g">
+                        <label class="form-check-label" for="unitG">gramy</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
                     <label for="ilosc" class="form-label">Ilość:</label>
                     <div class="input-group">
                         <button type="button" class="btn btn-outline-secondary" onclick="zmniejszIlosc()">-</button>
@@ -25,8 +60,11 @@
                         <button type="button" class="btn btn-outline-secondary" onclick="zwiekszIlosc()">+</button>
                     </div>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Dodaj</button>
+                 
+                
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-success" name="form_action" value="add">Dodaj do magazynu</button>
+                    <button type="submit" class="btn btn-warning" name="form_action" value="subtract">Odejmij z magazynu</button> 
                 </div>
             </form>
         </div>
@@ -35,47 +73,43 @@
     <!-- Tabele z kategoriami -->
     {% for kategoria, lista in [('Słody', slody), ('Chmiele', chmiele), ('Drożdże', drozdze), ('Inne składniki', inne)] %}
     <div class="mb-4">
-        <h3>{{ kategoria }}</h3>
+        <h3 class="text-center">{{ kategoria }}</h3>
         {% if lista %}
         <div class="table-responsive">
-            <table class="table table-striped table-bordered">
+            <table class="table table-dark table-striped table-bordered text-white">
                 <thead class="table-dark">
                     <tr>
                         <th>Nazwa</th>
                         <th>Ilość</th>
                         <th>Jednostka</th>
+                        <th>Akcje</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in lista %}
-                    <tr>
+                   <tr class="item-row" data-item-id="{{ item.id }}"> {# Dodana klasa i data-item-id dla JS #}
                         <td>{{ item.name }}</td>
-                        <td>{{ item.quantity }}</td>
+                        <td class="d-flex align-items-center justify-content-center"> {# ZMIANA: Centrowanie dla przycisków +/- #}
+                            <button class="btn btn-sm btn-outline-secondary quantity-btn decrease-btn">-</button> {# ZMIANA: klasy btn-sm #}
+                            <span class="current-quantity mx-2">{{ item.quantity }}</span> {# ZMIANA: mx-2 dla marginesów #}
+                            <button class="btn btn-sm btn-outline-secondary quantity-btn increase-btn">+</button>
+                        </td>
                         <td>{{ item.unit }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm delete-btn">Usuń</button> {# ZMIANA: klasy btn-sm #}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         {% else %}
-            <p class="text-muted">Brak składników w tej kategorii.</p>
+            <p class="text-muted text-center">Brak składników w tej kategorii.</p>
         {% endif %}
     </div>
     {% endfor %}
 </div>
 
-<script>
-    function zwiekszIlosc() {
-        var input = document.getElementById("ilosc");
-        input.value = parseInt(input.value) + 1;
-    }
-
-    function zmniejszIlosc() {
-        var input = document.getElementById("ilosc");
-        var current = parseInt(input.value);
-        if (current > 0) {
-            input.value = current - 1;
-        }
-    }
-</script>
+{# ZMIANA: Przeniesienie skryptów zwieksz/zmniejsz do inventory_script.js i dodanie tam całej logiki AJAX #}
+<script src="{{ url_for('static', filename='js/ingredients_script.js') }}"></script>
 {% endblock %}

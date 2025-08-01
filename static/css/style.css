@@ -160,104 +160,134 @@ body {
 
 /* --- Style dla strony Magazynu (ingredients.html) --- */
 
-/* Główny kontener strony magazynu */
-.inventory-container {
-    padding: 20px;
-    background-color: #222; /* Ciemniejsze tło dla sekcji magazynu */
-    border-radius: 8px;
-    margin-top: 20px; /* Odsunięcie od nagłówka/nawigacji */
-    color: #eee;
-}
-
-/* Nagłówki sekcji */
-.inventory-container h1, .inventory-container h2, .inventory-container h3 {
-    color: #ff8000; /* Pomarańczowy kolor dla nagłówków */
-    margin-bottom: 1em;
+/* Główne nagłówki na stronie magazynu */
+.container h1.mb-4 { /* Bardziej specyficzny selektor */
+    color: #ff8000; /* Pomarańczowy kolor dla nagłówka strony */
     text-align: center;
+    margin-bottom: 1.5rem; /* Większy odstęp */
 }
 
-/* Styl dla formularza dodawania składników */
-.add-item-section .form-group {
-    margin-bottom: 15px; /* Odstęp między polami formularza */
+/* Karta formularza dodawania składnika */
+.card {
+    background-color: #2a2a2a; /* Ciemniejsze tło karty */
+    border: 1px solid #444; /* Ciemniejsza ramka */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Delikatny cień */
 }
 
-/* Specyficzny styl dla input group w formularzu (ilość) */
-.add-item-section .input-group .form-control {
-    background-color: #444;
-    border: 1px solid #555;
-    color: white;
+.card-header {
+    background-color: #333; /* Ciemniejsze tło nagłówka karty */
+    border-bottom: 1px solid #444;
+    font-weight: bold;
+    color: #ff8000; /* Pomarańczowy tekst nagłówka karty */
 }
-.add-item-section .input-group .btn-outline-secondary {
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Pola formularza w karcie */
+.form-label {
+    color: #ddd; /* Jasnoszary kolor etykiet */
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: #333; /* Ciemne tło pól input */
+    border: 1px solid #555; /* Szara ramka pól input */
+    color: white; /* Biały tekst w polach input */
+}
+
+/* Przyciski radiowe w formularzu */
+.form-check-label {
+    color: #ddd; /* Jasnoszary tekst etykiet radio */
+    margin-left: 0.5rem; /* Mały odstęp od inputa */
+}
+
+.form-check-input:checked {
+    background-color: #ff8000; /* Pomarańczowy kolor zaznaczonego radio */
+    border-color: #ff8000;
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 128, 0, 0.25); /* Pomarańczowy cień przy focusie */
+}
+
+/* Input group (dla ilości) */
+.input-group .btn-outline-secondary {
     border-color: #ff8000;
     color: #ff8000;
+    background-color: transparent;
 }
-.add-item-section .input-group .btn-outline-secondary:hover {
+.input-group .btn-outline-secondary:hover {
     background-color: #ff8000;
     color: black;
 }
-
-/* Styl dla tabel magazynu */
-.inventory-table {
-    display: grid; /* Używamy grid dla lepszego układu tabelarycznego */
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Kolumny automatycznie się dopasowują */
-    gap: 1px; /* Cienkie linie między elementami gridu */
-    border: 1px solid #555;
-    border-radius: 5px;
-    overflow: hidden; /* Aby zaokrąglone rogi działały */
+.input-group .form-control {
+    background-color: #444;
 }
 
-.table-header, .item-row {
-    display: contents; /* Elementy wiersza stają się częścią gridu rodzica */
+/* Przyciski Dodaj/Odejmij w formularzu */
+.btn-success {
+    background-color: #28a745 !important; /* Zielony */
+    border-color: #28a745 !important;
+}
+.btn-warning {
+    background-color: #ffc107 !important; /* Żółty */
+    border-color: #ffc107 !important;
+    color: #212529 !important; /* Ciemny tekst na żółtym tle */
 }
 
-.table-header div, .item-row div {
-    padding: 10px;
-    background-color: #333;
-    border: 1px solid #444;
+/* Nagłówki kategorii składników */
+.mb-4 h3 {
+    color: #ff8000; /* Pomarańczowy kolor nagłówków kategorii */
     text-align: center;
-    display: flex; /* Aby centrować zawartość w komórkach */
-    justify-content: center;
-    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
-.table-header div {
-    background-color: #ff8000; /* Ciemne tło dla nagłówków tabeli */
-    font-weight: bold;
-    color: black;
+/* Tabele składników */
+.table-responsive {
+    border-radius: 8px; /* Zaokrąglone rogi dla responsywnej tabeli */
+    overflow: hidden; /* Upewnia się, że rogi są zaokrąglone */
 }
 
-.item-row:nth-child(even) div {
-    background-color: #2a2a2a; /* Ciemniejsze tło dla parzystych wierszy */
+.table-dark {
+    --bs-table-bg: #333; /* Ciemne tło dla tabeli */
+    --bs-table-color: white; /* Biały tekst */
+    --bs-table-striped-bg: #2a2a2a; /* Ciemniejsze paski */
+    --bs-table-border-color: #444; /* Ciemniejsza ramka */
 }
 
-/* Styl dla przycisków w tabeli */
-.quantity-btn {
-    background-color: #ff8000;
-    color: black;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin: 0 5px;
-    font-weight: bold;
-}
-.quantity-btn:hover {
-    background-color: #e07000;
-}
-.delete-btn {
-    background-color: #dc3545; /* Czerwony kolor dla usuwania */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-.delete-btn:hover {
-    background-color: #c82333;
+/* Komórki tabeli */
+.table th, .table td {
+    vertical-align: middle; /* Wyrównanie pionowe zawartości komórek */
+    padding: 0.8rem; /* Większy padding dla lepszego wyglądu */
+    text-align: center; /* Wyśrodkowanie tekstu w komórkach */
 }
 
+/* Przyciski w tabeli (zmienianie ilości, usuwanie) */
+.table .btn-sm { /* Styl dla mniejszych przycisków w tabeli */
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    border-radius: 0.2rem;
+}
+
+/* Styl dla aktualnej ilości w tabeli */
 .current-quantity {
+    min-width: 30px; /* Aby liczba się nie "telepała" przy zmianie */
     display: inline-block;
-    min-width: 30px; /* Minimalna szerokość, żeby liczba się nie "telepała" */
+}
+
+/* Kolumna akcji w tabeli */
+.table td:last-child {
+    text-align: center; /* Centrowanie przycisków w ostatniej kolumnie */
+}
+
+/* Tekst "Brak składników w tej kategorii" */
+.text-muted {
+    color: #aaa !important; /* Jasnoszary kolor */
+    font-style: italic;
     text-align: center;
+    margin-top: 1rem;
 }

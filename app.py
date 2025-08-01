@@ -22,7 +22,7 @@ class Item(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True) # Nazwa, unikalna
     quantity = db.Column(db.Integer, default=0, nullable=False)   # Ilość, domyślnie 0
     unit = db.Column(db.String(20), default='g') # Jednostka, domyślnie gram
-    type = db.Column(db.String(50), default='słód')  # rodzaj do rozbicia tabeli na mniejsze tabele na stronie
+    type = db.Column(db.String(50), default='słód')   # rodzaj do rozbicia tabeli na mniejsze tabele na stronie
 
     def __repr__(self):
         # Reprezentacja obiektu, przydatna do debugowania
@@ -67,44 +67,72 @@ def index():
 
 @app.route('/ingredients')
 def ingredients():
-    """Trasa dla strony Magazynu/Składników. Wyświetla listę wszystkich składników."""
-    # # Pobieramy wszystkie elementy z bazy danych, posortowane alfabetycznie
-    # items = Item.query.order_by(Item.name).all()
-    # # Przekazujemy listę elementów do szablonu ingredients.html 
-    # return render_template('ingredients.html', items=items)
-    slody = Item.query.filter_by(type='slod').all()
-    chmiele = Item.query.filter_by(type='chmiel').all()
-    drozdze = Item.query.filter_by(type='drozdze').all()
-    inne = Item.query.filter_by(type='inne').all()
-    return render_template(
-        'ingredients.html',
-        slody=slody,
-        chmiele=chmiele,
-        drozdze=drozdze,
-        inne=inne
-    )
+    """Trasa dla strony Magazynu/Składników. Renderuje szablon."""
+    # Dane są teraz pobierane przez JavaScript za pomocą /ingredients_data
+    return render_template('ingredients.html')
+
+@app.route('/ingredients_data')
+def ingredients_data():
+    """Trasa API do zwracania danych składników w JSON, podzielonych na kategorie."""
+    all_items = Item.query.order_by(Item.name).all()
+    
+    # Tworzymy słownik, który będzie przechowywał listy składników dla każdej kategorii
+    categorized_items = {
+        'slody': [],
+        'chmiele': [],
+        'drozdze': [],
+        'inne': []
+    }
+
+    for item in all_items:
+        # Konwertujemy obiekt Item na słownik, aby można go było zserializować do JSON
+        item_data = {
+            'id': item.id,
+            'name': item.name,
+            'quantity': item.quantity,
+            'unit': item.unit,
+            'type': item.type
+        }
+        # Dodajemy element do odpowiedniej kategorii, domyślnie 'inne' jeśli typ nie pasuje
+        # Upewnij się, że typy w bazie danych (np. 'slod', 'chmiel') odpowiadają kluczom w categorized_items
+        categorized_items.get(item.type, categorized_items['inne']).append(item_data)
+    
+    return jsonify(categorized_items) # Zwracamy dane jako JSON
+
 
 @app.route('/add_item', methods=['POST'])
 def add_item():
-    """Trasa do dodawania nowego elementu do magazynu (obsługa formularza POST)."""
-    if request.method == 'POST':
-        item_name = request.form['nazwa_elementu'].strip() # Usuwamy białe znaki
-        item_quantity = int(request.form['ilosc'])
+    """Trasa do dodawania/odejmowania elementu z magazynu (obsługa danych JSON z AJAX)."""
+    data = request.get_json()
+    item_name = data.get('nazwa_elementu').strip()
+    item_quantity = int(data.get('ilosc'))
+    item_type = data.get('type')
+    item_unit = data.get('unit')
 
-        # Sprawdzamy, czy element o takiej nazwie już istnieje
-        existing_item = Item.query.filter_by(name=item_name).first()
-        if existing_item:
-            # Jeśli istnieje, zwiększamy jego ilość
-            existing_item.quantity += item_quantity
-            db.session.commit()
-        else:
-            # Jeśli nie istnieje, tworzymy nowy element
-            new_item = Item(name=item_name, quantity=item_quantity)
+    if not item_name:
+        return jsonify(success=False, message="Nazwa składnika nie może być pusta."), 400
+
+    existing_item = Item.query.filter_by(name=item_name).first()
+
+    # Uproszczona logika oparta na znaku item_quantity
+    if existing_item:
+        existing_item.quantity += item_quantity
+        if existing_item.quantity < 0:
+            existing_item.quantity = 0
+        # Jeśli ilość jest dodawana, uaktualniamy też typ i jednostkę
+        if item_quantity > 0:
+            existing_item.unit = item_unit
+            existing_item.type = item_type
+        db.session.commit()
+        return jsonify(success=True, message="Ilość składnika zaktualizowana.")
+    else: # Nowy składnik, dodajemy go tylko jeśli ilość jest dodatnia
+        if item_quantity > 0:
+            new_item = Item(name=item_name, quantity=item_quantity, type=item_type, unit=item_unit)
             db.session.add(new_item)
-            db.session.commit() # Zatwierdzamy zmiany w bazie danych
-
-    # Po dodaniu/aktualizacji przekierowujemy użytkownika z powrotem na stronę składników
-    return redirect(url_for('ingredients'))
+            db.session.commit()
+            return jsonify(success=True, message="Składnik dodany pomyślnie.")
+        else:
+            return jsonify(success=False, message="Nie można odjąć ilości, gdy składnik nie istnieje."), 404
 
 @app.route('/update_item_quantity', methods=['POST'])
 def update_item_quantity():
@@ -140,7 +168,6 @@ def delete_item():
 @app.route('/recipes')
 def recipes():
     """Trasa dla strony przepisów."""
-    # Tutaj w przyszłości będziesz pobierać przepisy z bazy danych
     return render_template('recipes.html')
 
 # Trasa dla strony statystyk
@@ -160,4 +187,3 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-

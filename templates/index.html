@@ -3,9 +3,9 @@
 {% block title %}Strona główna{% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="index-page-orbit-container">
         <div class="beerglass">
-            <img src="{{ url_for('static', filename='img/beerglass.png') }}">
+            <img src="{{ url_for('static', filename='img/beerglass.png') }}" alt="Szklanka piwa">
         </div>
 
         <div class="ingredients">
@@ -31,7 +31,7 @@
         
         <div class="brewing">
             <a href="{{url_for('brewing') }}">
-            <img src="{{ url_for('static', filename='img/brewing.png') }}">
+            <img src="{{ url_for('static', filename='img/brewing.png') }}" alt="Ikona warzenia">
             <span>Warzenie</span>
             </a>
         </div>

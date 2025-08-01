@@ -1,122 +1,76 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const listaMagazynu = document.getElementById('lista-magazynu');
+    // Referencja do formularza dodawania składnika
+    const addItemForm = document.getElementById('dodaj-element-form');
+    
+    // Funkcja do obsługi wysyłania formularza dodawania składnika
+    addItemForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); // ZATRZYMUJEMY domyślne zachowanie formularza (czyli przeładowanie strony)
 
-    // Obsługa zwiększania/zmniejszania ilości
-    listaMagazynu.addEventListener('click', async function(event) {
-        let button = event.target;
-        if (button.classList.contains('increase-btn') || button.classList.contains('decrease-btn')) {
-            const itemRow = button.closest('.item-row');
-            const itemId = itemRow.dataset.itemId;
-            const currentQuantitySpan = itemRow.querySelector('.current-quantity');
-            let currentQuantity = parseInt(currentQuantitySpan.textContent);
-            let change = 0;
+        const formData = new FormData(this); // Zbierz wszystkie dane z formularza
+        
+        const itemName = formData.get('nazwa_elementu').trim();
+        let itemQuantity = parseInt(formData.get('ilosc'));
+        const itemType = formData.get('type'); 
+        const itemUnit = formData.get('unit');
+        
+        // Pobierz wartość klikniętego przycisku submit
+        const formAction = event.submitter.value;
 
-            if (button.classList.contains('increase-btn')) {
-                change = 1;
-            } else if (button.classList.contains('decrease-btn')) {
-                change = -1;
-            }
-
-            // Zapobiegnij spadnięciu poniżej zera na froncie, jeśli zmieniamy na -1
-            if (currentQuantity + change < 0) {
-                return; // Nie rób nic, jeśli próba zmniejszenia poniżej 0
-            }
-
-            try {
-                const response = await fetch('/update_item_quantity', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: itemId, change: change })
-                });
-                const data = await response.json();
-
-                if (data.success) {
-                    currentQuantitySpan.textContent = data.new_quantity; // Aktualizuj ilość na stronie
-                } else {
-                    console.error('Błąd aktualizacji ilości:', data.message);
-                    alert('Nie udało się zaktualizować ilości: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Błąd komunikacji z serwerem:', error);
-                alert('Wystąpił błąd podczas komunikacji z serwerem.');
-            }
+        if (!itemName) {
+            alert('Nazwa składnika nie może być pusta.');
+            return;
+        }
+        
+        // Jeśli akcja to 'subtract', zmień ilość na ujemną
+        if (formAction === 'subtract') {
+            // Upewnij się, że ilość jest dodatnia, a potem zmień na ujemną
+            itemQuantity = -Math.abs(itemQuantity);
         }
 
-        // Obsługa usuwania elementu
-        if (button.classList.contains('delete-btn')) {
-            const itemRow = button.closest('.item-row');
-            const itemId = itemRow.dataset.itemId;
+        // Utwórz obiekt z danymi do wysłania
+        const dataToSend = {
+            nazwa_elementu: itemName,
+            ilosc: itemQuantity,
+            type: itemType,
+            unit: itemUnit
+        };
 
-            if (confirm('Czy na pewno chcesz usunąć ten składnik z magazynu?')) {
-                try {
-                    const response = await fetch('/delete_item', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ id: itemId })
-                    });
-                    const data = await response.json();
+        try {
+            // Użyjemy action z formularza, czyli /add_item
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // TEN NAGŁÓWEK JEST KLUCZOWY!
+                },
+                body: JSON.stringify(dataToSend) // KONWERSJA NA JSON!
+            });
 
-                    if (data.success) {
-                        itemRow.remove(); // Usuń cały wiersz elementu z DOM
-                    } else {
-                        console.error('Błąd usuwania elementu:', data.message);
-                        alert('Nie udało się usunąć elementu: ' + data.message);
-                    }
-                } catch (error) {
-                    console.error('Błąd komunikacji z serwerem podczas usuwania:', error);
-                    alert('Wystąpił błąd podczas usuwania elementu.');
-                }
+            // Oczekujemy odpowiedzi w postaci JSON, nawet jeśli jest pusta
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                alert('Składnik ' + (formAction === 'add' ? 'dodany/zaktualizowany' : 'zaktualizowany') + ' pomyślnie!');
+                window.location.reload(); // Proste odświeżenie strony po pomyślnej operacji
+            } else {
+                console.error('Błąd podczas operacji na składniku:', result.message);
+                alert('Nie udało się wykonać operacji na składniku: ' + result.message);
             }
+        } catch (error) {
+            console.error('Błąd komunikacji z serwerem:', error);
+            alert('Wystąpił błąd podczas komunikacji z serwerem.');
         }
     });
 
-    // Obsługa dynamicznego dodawania elementu po wysłaniu formularza
-    // Przechwytywanie submit formularza, aby użyć AJAX
-    const addItemForm = document.getElementById('add-item-form');
-    if (addItemForm) {
-        addItemForm.addEventListener('submit', async function(event) {
-            event.preventDefault(); // Zapobiegamy domyślnej akcji wysłania formularza (przeładowania strony)
+    // Funkcje do przycisków +/- w formularzu dodawania
+    window.zwiekszIlosc = function() {
+        const iloscInput = document.getElementById('ilosc');
+        iloscInput.value = parseInt(iloscInput.value) + 1;
+    };
 
-            const formData = new FormData(this); // Zbierz dane z formularza
-            const itemName = formData.get('nazwa_elementu').trim();
-            const itemQuantity = parseInt(formData.get('ilosc'));
-
-            if (!itemName) {
-                alert('Nazwa składnika nie może być pusta.');
-                return;
-            }
-
-            try {
-                // Wysyłamy dane do Flask'a tradycyjnie, ale potem odświeżamy listę dynamicznie
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData // FormData jest automatycznie obsługiwana przez Flask
-                });
-
-                // Sprawdzamy czy odpowiedź jest OK, wtedy możemy odświeżyć listę.
-                // Flask redirectuje nas na /inventory, więc tutaj po prostu przeładujemy stronę.
-                // Aby to było prawdziwie dynamiczne, Flask musiałby zwracać JSON z nowym elementem
-                // i wtedy JavaScript by go dodawał. Na razie zostawimy proste przekierowanie.
-                if (response.redirected) {
-                    window.location.href = response.url; // Przekieruj przeglądarkę
-                } else {
-                    // W bardziej zaawansowanym AJAX, tutaj byśmy parsowali JSON i dodawali element
-                    // dynamicznie do listy bez przeładowania.
-                    alert('Składnik dodany lub zaktualizowany! Odśwież stronę, aby zobaczyć zmiany.');
-                    // LUB: Pobierz i wyświetl całą listę na nowo, bez przeładowania.
-                    // const updatedItemsResponse = await fetch('/inventory');
-                    // const updatedItemsHtml = await updatedItemsResponse.text();
-                    // listaMagazynu.innerHTML = updatedItemsHtml; // To wymagałoby, aby /inventory zwracało tylko fragment HTML
-                }
-                this.reset(); // Wyczyść formularz po wysłaniu
-            } catch (error) {
-                console.error('Błąd podczas dodawania składnika:', error);
-                alert('Wystąpił błąd podczas dodawania składnika.');
-            }
-        });
-    }
+    window.zmniejszIlosc = function() {
+        const iloscInput = document.getElementById('ilosc');
+        if (parseInt(iloscInput.value) > 0) {
+            iloscInput.value = parseInt(iloscInput.value) - 1;
+        }
+    };
 });
