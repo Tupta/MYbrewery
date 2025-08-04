@@ -291,3 +291,73 @@ body {
     text-align: center;
     margin-top: 1rem;
 }
+
+/* Plik: static/css/styles.css */
+
+/* Nadaje tło i podstawowe style dla całej strony */
+body {
+    background-color: #0d0d0d;
+    color: #f8f9fa;
+}
+
+/* Style dla kontenerów (kart) */
+.card {
+    background-color: #212529; /* Ciemniejszy odcień szarości dla tła karty */
+    border-color: #495057;
+}
+
+/* Style dla nagłówków w kartach */
+.card-header {
+    background-color: #1a1a1a !important; /* Jeszcze ciemniejszy odcień */
+    border-bottom-color: #ffc107 !important; /* Pomarańczowy akcent */
+    color: #ffc107; /* Pomarańczowy tekst */
+}
+
+/* Style dla przycisków */
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+    color: #212529;
+}
+
+/* Style dla tabeli, aby pasowała do ciemnego tła */
+.table {
+    color: #f8f9fa; /* Jasny tekst */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #343a40; /* Ciemniejszy kolor tła po najechaniu */
+}
+
+/* Style dla formularzy */
+.form-control, .form-select {
+    background-color: #495057;
+    color: #f8f9fa;
+    border-color: #ffc107;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #495057;
+    color: #f8f9fa;
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+}
+
+/* Style dla przycisków +/- w tabeli */
+.quantity-btn {
+    background-color: #495057;
+    color: #ffc107;
+    border-color: #ffc107;
+}
+
+.quantity-btn:hover {
+    background-color: #ffc107;
+    color: #212529;
+    border-color: #ffc107;
+}
